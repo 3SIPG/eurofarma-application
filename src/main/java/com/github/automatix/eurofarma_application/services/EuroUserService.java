@@ -1,5 +1,6 @@
 package com.github.automatix.eurofarma_application.services;
 
+import com.github.automatix.eurofarma_application.models.ConfirmationToken;
 import com.github.automatix.eurofarma_application.models.EuroUser;
 import com.github.automatix.eurofarma_application.repositories.EuroUserRepository;
 import lombok.AllArgsConstructor;
@@ -10,11 +11,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class EuroUserService implements UserDetailsService {
+
+    @Autowired
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Autowired
     private EuroUserRepository euroUserRepository;
@@ -38,13 +44,19 @@ public class EuroUserService implements UserDetailsService {
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         euroUserRepository.save(user);
-        //TODO: send confirmation token
-
-        return "working signup";
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        //TODO: send mail
+        return token;
 
     }
 
     public List<EuroUser> findAll(){
         return euroUserRepository.findAll();
+    }
+
+    public void enableEuroUser(EuroUser euroUser) {
+        euroUserRepository.enableEuroUser(euroUser.getEmail());
     }
 }

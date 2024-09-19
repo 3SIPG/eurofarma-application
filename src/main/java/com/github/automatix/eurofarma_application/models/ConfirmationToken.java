@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
 public class ConfirmationToken {
 
     @Id
@@ -29,11 +30,10 @@ public class ConfirmationToken {
     private EuroUser euroUser;
 
 
-    public ConfirmationToken(String token, LocalDateTime created, LocalDateTime expires, LocalDateTime confirmed, EuroUser euroUser) {
+    public ConfirmationToken(String token, LocalDateTime created, LocalDateTime expires, EuroUser euroUser) {
         this.token = token;
         this.created = created;
         this.expires = expires;
-        this.confirmed = confirmed;
         this.euroUser = euroUser;
     }
 }
