@@ -29,7 +29,7 @@ public class EuroUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private EuroUserRole role;
     private Boolean locked = false;
-    private Boolean enabled = false;
+    private Boolean enabled = true;
 
     public EuroUser(String firstName, String lastName, String email, String password, EuroUserRole role, Boolean locked, Boolean enabled) {
         this.firstName = firstName;
